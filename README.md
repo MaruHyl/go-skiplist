@@ -1,2 +1,5 @@
 # SkipList
-SkipList and indexable-skiplist
+参考 https://en.wikipedia.org/wiki/Skip_list
+
+# Indexable skiplist
+TODO
