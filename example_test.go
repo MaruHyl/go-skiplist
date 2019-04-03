@@ -1,9 +1,5 @@
-# SkipList
-ref: https://en.wikipedia.org/wiki/Skip_list
+package skiplist_test
 
-## example:
-
-```go
 import (
 	"fmt"
 	"github.com/MaruHyl/go-skiplist"
@@ -36,19 +32,3 @@ func ExampleSkipList() {
 	// 1 : value 1
 	// 3 : value 1
 }
-```
-
-## benchmark:
-
-```go
-goos: darwin
-goarch: amd64
-pkg: github.com/MaruHyl/go-skiplist
-BenchmarkSkipList_Insert-12      5000000               424 ns/op
-BenchmarkSkipList_Search-12     20000000               76.7 ns/op
-BenchmarkSkipList_Delete-12     20000000               90.6 ns/op
-
-```
-
-# Indexable skiplist
-TODO
