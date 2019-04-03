@@ -44,10 +44,9 @@ func ExampleSkipList() {
 goos: darwin
 goarch: amd64
 pkg: github.com/MaruHyl/go-skiplist
-BenchmarkSkipList_Insert-12      5000000               424 ns/op
-BenchmarkSkipList_Search-12     20000000               76.7 ns/op
-BenchmarkSkipList_Delete-12     20000000               90.6 ns/op
-
+BenchmarkSkipList_Insert-12      5000000               435 ns/op
+BenchmarkSkipList_Search-12      5000000               285 ns/op
+BenchmarkSkipList_Delete-12     10000000               199 ns/op
 ```
 
 # Indexable skiplist
