@@ -4,16 +4,19 @@ import (
 	"math/rand"
 )
 
-// if a>b then comp>0
-// if a=b then comp=0
-// if a<b then comp<0
-type CompareFunc func(a interface{}, b interface{}) (comp int)
+type LessFunc func(key interface{}, anotherKey interface{}) bool
 
-func compare(n *node, key interface{}, f CompareFunc) int {
+func compare(n *node, key interface{}, less LessFunc) int {
 	if n == nil {
 		return 1
 	}
-	return f(n.key, key)
+	if less(n.key, key) {
+		return -1
+	} else if less(key, n.key) {
+		return 1
+	} else {
+		return 0
+	}
 }
 
 const maxLevel = 64
@@ -26,15 +29,15 @@ type node struct {
 }
 
 type SkipList struct {
-	header      *node
-	compareFunc CompareFunc
-	length      int
+	header *node
+	less   LessFunc
+	length int
 }
 
-func New(f CompareFunc) *SkipList {
+func New(less LessFunc) *SkipList {
 	l := &SkipList{
-		compareFunc: f,
-		header:      makeNode(maxLevel, nil, nil),
+		less:   less,
+		header: makeNode(maxLevel, nil, nil),
 	}
 	return l
 }
@@ -42,12 +45,12 @@ func New(f CompareFunc) *SkipList {
 func (l *SkipList) Search(key interface{}) (interface{}, bool) {
 	x := l.header
 	for i := maxLevel - 1; i >= 0; i-- {
-		for compare(x.forward[i], key, l.compareFunc) < 0 {
+		for compare(x.forward[i], key, l.less) < 0 {
 			x = x.forward[i]
 		}
 	}
 	x = x.forward[0]
-	if compare(x, key, l.compareFunc) == 0 {
+	if compare(x, key, l.less) == 0 {
 		return x.value, true
 	}
 	return nil, false
@@ -73,13 +76,13 @@ func (l *SkipList) Insert(key interface{}, value interface{}) {
 	update := make([]*node, maxLevel)
 	x := l.header
 	for i := maxLevel - 1; i >= 0; i-- {
-		for compare(x.forward[i], key, l.compareFunc) < 0 {
+		for compare(x.forward[i], key, l.less) < 0 {
 			x = x.forward[i]
 		}
 		update[i] = x
 	}
 	x = x.forward[0]
-	if compare(x, key, l.compareFunc) == 0 {
+	if compare(x, key, l.less) == 0 {
 		x.value = value
 	} else {
 		level := l.randomLevel()
@@ -96,13 +99,13 @@ func (l *SkipList) Delete(key interface{}) (interface{}, bool) {
 	update := make([]*node, maxLevel)
 	x := l.header
 	for i := maxLevel - 1; i >= 0; i-- {
-		for compare(x.forward[i], key, l.compareFunc) < 0 {
+		for compare(x.forward[i], key, l.less) < 0 {
 			x = x.forward[i]
 		}
 		update[i] = x
 	}
 	x = x.forward[0]
-	if compare(x, key, l.compareFunc) == 0 {
+	if compare(x, key, l.less) == 0 {
 		for i := 0; i < maxLevel; i++ {
 			if update[i].forward[i] != x {
 				break
@@ -119,6 +122,7 @@ func (l *SkipList) Len() int {
 	return l.length
 }
 
+// Foreach in order
 func (l *SkipList) Foreach(f func(key interface{}, value interface{})) {
 	for x := l.header.forward[0]; x != nil; x = x.forward[0] {
 		f(x.key, x.value)

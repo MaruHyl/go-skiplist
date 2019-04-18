@@ -6,8 +6,8 @@ import (
 )
 
 func ExampleSkipList() {
-	intCompare := func(a interface{}, b interface{}) int {
-		return a.(int) - b.(int)
+	intCompare := func(a interface{}, b interface{}) bool {
+		return a.(int) < b.(int)
 	}
 	l := skiplist.New(intCompare)
 

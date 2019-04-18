@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-func intCompare(a interface{}, b interface{}) int {
-	return a.(int) - b.(int)
+func intCompare(a interface{}, b interface{}) bool {
+	return a.(int) < b.(int)
 }
 
 func init() {
@@ -52,7 +52,7 @@ func checkSkipList(t *testing.T, sl *SkipList, dataMap map[int]int) {
 		x := sl.header
 		for x.forward[i] != nil {
 			if x != sl.header {
-				require.True(t, intCompare(x.key, x.forward[i].key) < 0)
+				require.True(t, intCompare(x.key, x.forward[i].key))
 			}
 			x = x.forward[i]
 		}
